@@ -1,0 +1,16 @@
+
+
+
+
+    <com.zhengj.view.BinarySlidingMenu
+        xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/mRoot"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/bg"
+        android:scrollbars="none" >
+    </com.zhengj.view.BinarySlidingMenu>
+
+
+    
