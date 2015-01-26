@@ -358,6 +358,8 @@ public class BinarySlidingMenu extends ViewGroup {
 	}
 
 	public void scrollRightMenu() {
+		
+		if(direction ==2 ||direction==0){
 		int scrollX = getScrollX();
 		int dx = 2 * left_distince - getScrollX();
 		Log.d("scrollX", "scrollX===" + scrollX);
@@ -379,10 +381,12 @@ public class BinarySlidingMenu extends ViewGroup {
 			isRightMenuOpen = true;
 		}
 
+		}
 		postInvalidate();
 	}
 
 	public void scrollLeftMenu() {
+		if(direction ==1 ||direction==0){
 		int scrollX = getScrollX();
 		int dx = 2 * left_distince - getScrollX();
 
@@ -405,6 +409,7 @@ public class BinarySlidingMenu extends ViewGroup {
 			isLeftMenuOpen = true;
 		}
 
+		}
 		postInvalidate();
 	}
 
