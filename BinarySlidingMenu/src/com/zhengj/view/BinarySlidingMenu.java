@@ -36,6 +36,7 @@ public class BinarySlidingMenu extends ViewGroup {
 
 	private int minScrollWidth = 0;
 	private int correctWidth = 0;
+	private boolean ones = false;
 
 	/**
 	 * 回调的接口
@@ -181,26 +182,23 @@ public class BinarySlidingMenu extends ViewGroup {
 				int scrollX = getScrollX();
 				int resultScrollX = scrollX - dx;
 
-				
 				if (dx < 0) {
 					if (direction == 2 || direction == 0 || isLeftMenuOpen) {
-					if (resultScrollX >= 2 * left_distince) {
-						dx = 0;
-					}
-					scrollBy(-dx, 0);
+						if (resultScrollX >= 2 * left_distince) {
+							dx = 0;
+						}
+						scrollBy(-dx, 0);
 					}
 				} else {
 					if (direction == 1 || direction == 0 || isRightMenuOpen) {
-					if (resultScrollX <= 0) {
-						dx = 0;
-					}
-					
-					
-					scrollBy(-dx, 0);
+						if (resultScrollX <= 0) {
+							dx = 0;
+						}
+
+						scrollBy(-dx, 0);
 					}
 				}
-				
-			
+
 			}
 			mLastMotionX1 = x1;
 			break;
@@ -358,56 +356,56 @@ public class BinarySlidingMenu extends ViewGroup {
 	}
 
 	public void scrollRightMenu() {
-		
-		if(direction ==2 ||direction==0){
-		int scrollX = getScrollX();
-		int dx = 2 * left_distince - getScrollX();
-		Log.d("scrollX", "scrollX===" + scrollX);
 
-		if (isRightMenuOpen) {
-			dx = mMenuWidth - getScrollX();
-			int startX = scrollX;
-			cmScroller.startScroll(startX, 0, dx, 0, Math.abs(dx) * 2);
-			if (isRightMenuOpen && mOnMenuOpenListener != null) {
-				mOnMenuOpenListener.onMenuOpen(false, 1);
+		if (direction == 2 || direction == 0) {
+			int scrollX = getScrollX();
+			int dx = 2 * left_distince - getScrollX();
+			Log.d("scrollX", "scrollX===" + scrollX);
+
+			if (isRightMenuOpen) {
+				dx = mMenuWidth - getScrollX();
+				int startX = scrollX;
+				cmScroller.startScroll(startX, 0, dx, 0, Math.abs(dx) * 2);
+				if (isRightMenuOpen && mOnMenuOpenListener != null) {
+					mOnMenuOpenListener.onMenuOpen(false, 1);
+				}
+				isRightMenuOpen = false;
+			} else {
+				int startX = scrollX;
+				if (!isRightMenuOpen && mOnMenuOpenListener != null) {
+					mOnMenuOpenListener.onMenuOpen(true, 1);
+				}
+				cmScroller.startScroll(startX, 0, dx, 0, Math.abs(dx) * 2);
+				isRightMenuOpen = true;
 			}
-			isRightMenuOpen = false;
-		} else {
-			int startX = scrollX;
-			if (!isRightMenuOpen && mOnMenuOpenListener != null) {
-				mOnMenuOpenListener.onMenuOpen(true, 1);
-			}
-			cmScroller.startScroll(startX, 0, dx, 0, Math.abs(dx) * 2);
-			isRightMenuOpen = true;
-		}
 
 		}
 		postInvalidate();
 	}
 
 	public void scrollLeftMenu() {
-		if(direction ==1 ||direction==0){
-		int scrollX = getScrollX();
-		int dx = 2 * left_distince - getScrollX();
+		if (direction == 1 || direction == 0) {
+			int scrollX = getScrollX();
+			int dx = 2 * left_distince - getScrollX();
 
-		if (isLeftMenuOpen) {
-			dx = mMenuWidth - scrollX;
-			int startX = scrollX;
-			cmScroller.startScroll(startX, 0, dx, 0, Math.abs(dx) * 2);
+			if (isLeftMenuOpen) {
+				dx = mMenuWidth - scrollX;
+				int startX = scrollX;
+				cmScroller.startScroll(startX, 0, dx, 0, Math.abs(dx) * 2);
 
-			if (isLeftMenuOpen && mOnMenuOpenListener != null) {
-				mOnMenuOpenListener.onMenuOpen(false, 0);
+				if (isLeftMenuOpen && mOnMenuOpenListener != null) {
+					mOnMenuOpenListener.onMenuOpen(false, 0);
+				}
+				isLeftMenuOpen = false;
+			} else {
+				dx = -scrollX;
+				int startX = scrollX;
+				cmScroller.startScroll(startX, 0, dx, 0, Math.abs(dx) * 2);
+				if (!isLeftMenuOpen && mOnMenuOpenListener != null) {
+					mOnMenuOpenListener.onMenuOpen(true, 0);
+				}
+				isLeftMenuOpen = true;
 			}
-			isLeftMenuOpen = false;
-		} else {
-			dx = -scrollX;
-			int startX = scrollX;
-			cmScroller.startScroll(startX, 0, dx, 0, Math.abs(dx) * 2);
-			if (!isLeftMenuOpen && mOnMenuOpenListener != null) {
-				mOnMenuOpenListener.onMenuOpen(true, 0);
-			}
-			isLeftMenuOpen = true;
-		}
 
 		}
 		postInvalidate();
@@ -447,7 +445,11 @@ public class BinarySlidingMenu extends ViewGroup {
 				}
 			}
 		}
-		scrollTo(left_distince, 0);
+
+		if (!ones) {
+			ones = true;
+			scrollTo(left_distince, 0);
+		}
 
 	}
 
