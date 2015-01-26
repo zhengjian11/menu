@@ -26,9 +26,8 @@ public class BinarySlidingMenu extends ViewGroup {
 	private int mMenuWidth;
 	private int mHalfMenuWidth = 0;
 
-	private boolean isOperateRight =false;
+	private boolean isOperateRight = false;
 	private boolean isOperateLeft = false;
-
 
 	private View mContent;
 
@@ -36,7 +35,7 @@ public class BinarySlidingMenu extends ViewGroup {
 	private boolean isRightMenuOpen = false;
 
 	private int minScrollWidth = 0;
-	private int correctWidth =  0; 
+	private int correctWidth = 0;
 
 	/**
 	 * 回调的接口
@@ -77,7 +76,7 @@ public class BinarySlidingMenu extends ViewGroup {
 		minScrollWidth = left_distince / 3;
 		correctWidth = context.getResources().getDimensionPixelSize(
 				R.dimen.correctWidth);
-		
+
 	}
 
 	/**
@@ -123,6 +122,7 @@ public class BinarySlidingMenu extends ViewGroup {
 
 	private int drag_min_distince = 10;
 	private float mLastMotionX1;
+	private int direction;
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -181,17 +181,26 @@ public class BinarySlidingMenu extends ViewGroup {
 				int scrollX = getScrollX();
 				int resultScrollX = scrollX - dx;
 
+				
 				if (dx < 0) {
+					if (direction == 2 || direction == 0 || isLeftMenuOpen) {
 					if (resultScrollX >= 2 * left_distince) {
 						dx = 0;
 					}
+					scrollBy(-dx, 0);
+					}
 				} else {
-
+					if (direction == 1 || direction == 0 || isRightMenuOpen) {
 					if (resultScrollX <= 0) {
 						dx = 0;
 					}
+					
+					
+					scrollBy(-dx, 0);
+					}
 				}
-				scrollBy(-dx, 0);
+				
+			
 			}
 			mLastMotionX1 = x1;
 			break;
@@ -205,104 +214,108 @@ public class BinarySlidingMenu extends ViewGroup {
 			int scrollX = getScrollX();
 			int dx = 2 * left_distince - getScrollX();
 
-			if (getScrollX() <= mMenuWidth) {
+			if (direction == 1 || direction == 0) {
+				if (getScrollX() <= mMenuWidth) {
 
-				if (isLeftMenuOpen) {
-					if (scrollX > minScrollWidth) {
+					if (isLeftMenuOpen) {
+						if (scrollX > minScrollWidth) {
 
-						dx = mMenuWidth - scrollX;
-						int startX = scrollX;
-						cmScroller.startScroll(startX, 0, dx, 0,
-								Math.abs(dx) * 2);
+							dx = mMenuWidth - scrollX;
+							int startX = scrollX;
+							cmScroller.startScroll(startX, 0, dx, 0,
+									Math.abs(dx) * 2);
 
-						if (isLeftMenuOpen && mOnMenuOpenListener != null) {
-							mOnMenuOpenListener.onMenuOpen(false, 0);
+							if (isLeftMenuOpen && mOnMenuOpenListener != null) {
+								mOnMenuOpenListener.onMenuOpen(false, 0);
+							}
+							isLeftMenuOpen = false;
+
+						} else {
+
+							dx = -scrollX;
+							int startX = scrollX;
+							cmScroller.startScroll(startX, 0, dx, 0,
+									Math.abs(dx) * 2);
+							if (!isLeftMenuOpen && mOnMenuOpenListener != null) {
+								mOnMenuOpenListener.onMenuOpen(true, 0);
+							}
+							isLeftMenuOpen = true;
+
 						}
-						isLeftMenuOpen = false;
-
-					} else
-					{
-
-						dx = -scrollX;
-						int startX = scrollX;
-						cmScroller.startScroll(startX, 0, dx, 0,
-								Math.abs(dx) * 2);
-						if (!isLeftMenuOpen && mOnMenuOpenListener != null) {
-							mOnMenuOpenListener.onMenuOpen(true, 0);
-						}
-						isLeftMenuOpen = true;
-
-					}
-				} else {
-
-					if (scrollX < mMenuWidth - minScrollWidth) {
-						dx = -scrollX;
-						int startX = scrollX;
-						cmScroller.startScroll(startX, 0, dx, 0,
-								Math.abs(dx) * 2);
-						if (isLeftMenuOpen && mOnMenuOpenListener != null) {
-							mOnMenuOpenListener.onMenuOpen(true, 0);
-						}
-						isLeftMenuOpen = true;
-
 					} else {
-						dx = mMenuWidth - scrollX;
-						int startX = scrollX;
-						cmScroller.startScroll(startX, 0, dx, 0,
-								Math.abs(dx) * 2);
-						if (!isLeftMenuOpen && mOnMenuOpenListener != null) {
-							mOnMenuOpenListener.onMenuOpen(false, 0);
-						}
-						isLeftMenuOpen = false;
 
-					}
+						if (scrollX < mMenuWidth - minScrollWidth) {
+							dx = -scrollX;
+							int startX = scrollX;
+							cmScroller.startScroll(startX, 0, dx, 0,
+									Math.abs(dx) * 2);
+							if (isLeftMenuOpen && mOnMenuOpenListener != null) {
+								mOnMenuOpenListener.onMenuOpen(true, 0);
+							}
+							isLeftMenuOpen = true;
 
-				}
-			}
+						} else {
+							dx = mMenuWidth - scrollX;
+							int startX = scrollX;
+							cmScroller.startScroll(startX, 0, dx, 0,
+									Math.abs(dx) * 2);
+							if (!isLeftMenuOpen && mOnMenuOpenListener != null) {
+								mOnMenuOpenListener.onMenuOpen(false, 0);
+							}
+							isLeftMenuOpen = false;
 
-			if (getScrollX() >= mMenuWidth) {
-				if (isRightMenuOpen == false) {
-					if (scrollX > (mMenuWidth + minScrollWidth)) {
-						int startX = scrollX;
-						cmScroller.startScroll(startX, 0, dx, 0,
-								Math.abs(dx) * 2);
-						if (!isRightMenuOpen && mOnMenuOpenListener != null) {
-							mOnMenuOpenListener.onMenuOpen(true, 1);
 						}
-						isRightMenuOpen = true;
-					} else {
-						dx = mMenuWidth - getScrollX();
-						int startX = scrollX;
-						cmScroller.startScroll(startX, 0, dx, 0,
-								Math.abs(dx) * 2);
-						if (isRightMenuOpen && mOnMenuOpenListener != null) {
-							mOnMenuOpenListener.onMenuOpen(false, 1);
-						}
-						isRightMenuOpen = false;
-					}
-				} else {
-					if (scrollX < (2 * mMenuWidth - minScrollWidth)) {
-						dx = mMenuWidth - getScrollX();
-						int startX = scrollX;
-						cmScroller.startScroll(startX, 0, dx, 0,
-								Math.abs(dx) * 2);
-						if (isRightMenuOpen && mOnMenuOpenListener != null) {
-							mOnMenuOpenListener.onMenuOpen(false, 1);
-						}
-						isRightMenuOpen = false;
-					} else {
-						int startX = scrollX;
-						cmScroller.startScroll(startX, 0, dx, 0,
-								Math.abs(dx) * 2);
-						if (!isRightMenuOpen && mOnMenuOpenListener != null) {
-							mOnMenuOpenListener.onMenuOpen(true, 1);
-						}
-						isRightMenuOpen = true;
+
 					}
 				}
+
 			}
 
+			if (direction == 2 || direction == 0) {
+				if (getScrollX() >= mMenuWidth) {
+					if (isRightMenuOpen == false) {
+						if (scrollX > (mMenuWidth + minScrollWidth)) {
+							int startX = scrollX;
+							cmScroller.startScroll(startX, 0, dx, 0,
+									Math.abs(dx) * 2);
+							if (!isRightMenuOpen && mOnMenuOpenListener != null) {
+								mOnMenuOpenListener.onMenuOpen(true, 1);
+							}
+							isRightMenuOpen = true;
+						} else {
+							dx = mMenuWidth - getScrollX();
+							int startX = scrollX;
+							cmScroller.startScroll(startX, 0, dx, 0,
+									Math.abs(dx) * 2);
+							if (isRightMenuOpen && mOnMenuOpenListener != null) {
+								mOnMenuOpenListener.onMenuOpen(false, 1);
+							}
+							isRightMenuOpen = false;
+						}
+					} else {
+						if (scrollX < (2 * mMenuWidth - minScrollWidth)) {
+							dx = mMenuWidth - getScrollX();
+							int startX = scrollX;
+							cmScroller.startScroll(startX, 0, dx, 0,
+									Math.abs(dx) * 2);
+							if (isRightMenuOpen && mOnMenuOpenListener != null) {
+								mOnMenuOpenListener.onMenuOpen(false, 1);
+							}
+							isRightMenuOpen = false;
+						} else {
+							int startX = scrollX;
+							cmScroller.startScroll(startX, 0, dx, 0,
+									Math.abs(dx) * 2);
+							if (!isRightMenuOpen && mOnMenuOpenListener != null) {
+								mOnMenuOpenListener.onMenuOpen(true, 1);
+							}
+							isRightMenuOpen = true;
+						}
+					}
+				}
+			}
 			postInvalidate();
+
 			break;
 		default:
 			break;
@@ -327,7 +340,7 @@ public class BinarySlidingMenu extends ViewGroup {
 			isOperateLeft = false;
 			float scale1 = 1 - ((mMenuWidth * (scale - 1)) / mMenuWidth) * 0.2f;
 			float scale2 = 1 - ((mMenuWidth * (scale - 1)) / mMenuWidth) * 0.3f;
-			ViewHelper.setAlpha(getChildAt(2),  Math.abs(scale-1));
+			ViewHelper.setAlpha(getChildAt(2), Math.abs(scale - 1));
 			ViewHelper.setScaleX(mContent, (scale1));
 			ViewHelper.setScaleY(mContent, (scale2));
 
@@ -337,7 +350,7 @@ public class BinarySlidingMenu extends ViewGroup {
 			isOperateLeft = true;
 			float scale1 = ((mMenuWidth * (scale - 1)) / mMenuWidth) * 0.2f + 1;
 			float scale2 = ((mMenuWidth * (scale - 1)) / mMenuWidth) * 0.3f + 1;
-			ViewHelper.setAlpha(getChildAt(0), Math.abs(scale-1));
+			ViewHelper.setAlpha(getChildAt(0), Math.abs(scale - 1));
 			ViewHelper.setScaleX(mContent, (scale1));
 			ViewHelper.setScaleY(mContent, (scale2));
 		}
@@ -410,7 +423,7 @@ public class BinarySlidingMenu extends ViewGroup {
 			if (childView.getVisibility() != View.GONE) {
 
 				if (i == 0) {
-					childView.layout(0, 0, left_distince+correctWidth,
+					childView.layout(0, 0, left_distince + correctWidth,
 							childView.getMeasuredHeight());
 
 				} else if (i == 1) {
@@ -421,7 +434,8 @@ public class BinarySlidingMenu extends ViewGroup {
 									childView.getMeasuredHeight());
 
 				} else {
-					childView.layout(left_distince + mScreenWidth-correctWidth, 0,
+					childView.layout(left_distince + mScreenWidth
+							- correctWidth, 0,
 
 					2 * left_distince + mScreenWidth,
 							childView.getMeasuredHeight());
@@ -430,5 +444,14 @@ public class BinarySlidingMenu extends ViewGroup {
 		}
 		scrollTo(left_distince, 0);
 
+	}
+
+	/**
+	 * direction 0:左右都支持 1向右侧 2向左侧
+	 * 
+	 * @param direction
+	 */
+	public void setMenuEnable(int direction) {
+		this.direction = direction;
 	}
 }
