@@ -38,6 +38,12 @@ public class BinarySlidingMenu extends ViewGroup {
 	private int correctWidth = 0;
 	private boolean ones = false;
 
+	private int scrollDirection = 0;
+	/**
+	 * 0：没有打开menu，1 打开左侧菜单，2，打开右侧菜单
+	 */
+	private int LastOpenDirection = 0;
+
 	/**
 	 * 回调的接口
 	 * 
@@ -181,17 +187,29 @@ public class BinarySlidingMenu extends ViewGroup {
 				int dx = (int) (x1 - mLastMotionX1);
 				int scrollX = getScrollX();
 				int resultScrollX = scrollX - dx;
-
+				Log.e("dx=================", dx + "===");
 				if (dx < 0) {
+
 					if (direction == 2 || direction == 0 || isLeftMenuOpen) {
 						if (resultScrollX >= 2 * left_distince) {
 							dx = 0;
 						}
+
+						if (resultScrollX > left_distince && isLeftMenuOpen) {
+							dx = 0;
+						}
+
 						scrollBy(-dx, 0);
 					}
+
 				} else {
 					if (direction == 1 || direction == 0 || isRightMenuOpen) {
 						if (resultScrollX <= 0) {
+
+							dx = 0;
+						}
+
+						if (resultScrollX < left_distince && isRightMenuOpen) {
 							dx = 0;
 						}
 
